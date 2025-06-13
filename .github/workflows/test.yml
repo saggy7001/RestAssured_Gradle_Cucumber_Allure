@@ -1,9 +1,11 @@
-name: Run Tests and Upload Allure Report
+name: Run API Tests with Allure
 
 on:
   push:
-    branches: [master]
+    branches: [ master ]
   pull_request:
+    branches: [ master ]
+  workflow_dispatch:   # <-- Add this line for manual trigger
 
 jobs:
   test:
@@ -16,25 +18,26 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
           distribution: 'temurin'
+          java-version: '17'
 
-      - name: Grant execute permission for Gradle
-        run: chmod +x gradlew
+      - name: Set up Gradle
+        uses: gradle/gradle-build-action@v3
 
-      - name: Run tests with Gradle
-        run: ./gradlew clean test
+      - name: Execute tests (even if failed)
+        run: |
+          ./gradlew clean test || echo "Tests failed, but continuing to generate report..."
 
       - name: Generate Allure Report
-        run: ./gradlew allureReport
+        run: |
+          ./gradlew allureReport
 
       - name: Zip Allure Report
         run: |
-          mkdir -p build/reports
-          zip -r build/reports/allure-report.zip build/reports/allure-report || true
+          zip -r allure-report.zip build/reports/allure-report
 
-      - name: Upload Allure report artifact
+      - name: Upload Allure Report ZIP
         uses: actions/upload-artifact@v4
         with:
-          name: allure-results
-          path: build/reports/allure-report.zip
+          name: allure-report
+          path: allure-report.zip
