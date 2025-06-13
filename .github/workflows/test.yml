@@ -54,7 +54,7 @@ jobs:
         if: always() # upload even on failure
         with:
           name: test-results
-          path: build/test-results/test/*.xml
+          path: build/reports/tests/test/**
 
       - name: Publish test results with GitHub Checks
         uses: dorny/test-reporter@v1
