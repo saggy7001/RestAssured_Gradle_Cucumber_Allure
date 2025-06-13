@@ -44,3 +44,11 @@ jobs:
         with:
           name: allure-report
           path: allure-report.zip
+
+      - name: Upload test results to GitHub
+        uses: dorny/test-reporter@v1
+        if: always() # Run even if tests fail
+        with:
+          name: Test Report
+          path: build/test-results/test/*.xml
+          reporter: junit
