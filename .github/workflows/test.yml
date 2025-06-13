@@ -45,15 +45,17 @@ jobs:
           name: allure-report
           path: allure-report.zip
 
-      - name: Upload test results
+      - name: Upload test results artifact
         uses: actions/upload-artifact@v4
-        if: always() # Run even if tests fail
+        if: always() # upload even on failure
         with:
           name: test-results
           path: build/test-results/test/*.xml
 
-      - name: Publish test results with GitHub Action
-        uses: actions/upload-test-results@v1
-        if: always() # Run even if tests fail
+      - name: Publish test results with GitHub Checks
+        uses: dorny/test-reporter@v1
+        if: always() # publish even on failure
         with:
+          name: JUnit Tests
           path: build/test-results/test/*.xml
+          reporter: junit
