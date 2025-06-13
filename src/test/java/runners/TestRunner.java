@@ -10,7 +10,7 @@ import org.junit.runner.RunWith;
         glue = {"stepdefs"},
         plugin = {"pretty", "io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm"},
         monochrome = true,
-        tags = "@math"
+        tags = "@login"
 )
 public class TestRunner {
 }
