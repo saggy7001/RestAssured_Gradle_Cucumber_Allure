@@ -60,6 +60,6 @@ jobs:
         uses: dorny/test-reporter@v1
         if: always() # publish even on failure
         with:
-          name: JUnit Tests
+          name: JUnit Test Report
           path: build/test-results/test/*.xml
           reporter: java-junit
