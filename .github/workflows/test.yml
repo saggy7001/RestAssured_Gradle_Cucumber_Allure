@@ -46,7 +46,7 @@ jobs:
           path: allure-report.zip
 
       - name: Upload test results
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always() # Run even if tests fail
         with:
           name: test-results
