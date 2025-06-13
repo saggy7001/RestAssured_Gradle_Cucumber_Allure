@@ -25,7 +25,9 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Set up Gradle
-        uses: gradle/gradle-build-action@v3
+        uses: gradle/actions/setup-gradle@v2
+        with:
+          gradle-version: '8.0'
 
       - name: Execute tests (even if failed)
         run: |
@@ -58,4 +60,4 @@ jobs:
         with:
           name: JUnit Tests
           path: build/test-results/test/*.xml
-          reporter: junit-xml
+          reporter: java-junit
