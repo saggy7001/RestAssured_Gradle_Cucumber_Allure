@@ -1,3 +1,4 @@
+@math
 Feature: Add Numbers
 
   Scenario Outline: Add numbers

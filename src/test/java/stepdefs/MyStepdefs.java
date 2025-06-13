@@ -21,7 +21,7 @@ public class MyStepdefs{
 
     @Then("The result should be {int}")
     public void theResultShouldBe(int expected) {
-        int actual = context.get("sum", int.class);
+        int actual = context.get("sum", Integer.class);
         assertEquals(expected, actual);
     }
 }

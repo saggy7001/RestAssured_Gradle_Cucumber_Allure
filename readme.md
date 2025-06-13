@@ -86,7 +86,7 @@ This framework is designed for automated API testing using Java. It combines pop
 3. Add valid test data to your feature files.
 4. Run tests:
    ```bash
-   ./gradlew test
+   ./gradlew clean test
    ```
 5. Generate Allure reports:
     ```bash
