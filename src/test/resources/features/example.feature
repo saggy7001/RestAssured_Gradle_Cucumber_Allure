@@ -7,4 +7,4 @@ Feature: Add Numbers
     Examples:
       | num1 | num2 | result |
       | 1    | 1    | 2      |
-      | 1    | 1    | 3      |
+      | 1    | 1    | 2      |
