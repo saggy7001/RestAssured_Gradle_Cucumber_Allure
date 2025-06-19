@@ -41,15 +41,10 @@ jobs:
         run: |
           ./gradlew allureReport
 
-      - name: Zip Allure Report
-        run: |
-          zip -r allure-report.zip build/reports/allure-report/allureReport
-
-      - name: Upload Allure Report ZIP
-        uses: actions/upload-artifact@v4
+      - name: Upload Allure Report for GitHub Pages
+        uses: actions/upload-pages-artifact@v3
         with:
-          name: allure-report
-          path: allure-report.zip
+          path: build/reports/allure-report/allureReport
 
       - name: Upload test results artifact
         uses: actions/upload-artifact@v4
@@ -74,16 +69,5 @@ jobs:
       name: github-pages
 
     steps:
-      - name: Download Allure Report ZIP
-        uses: actions/download-artifact@v4
-        with:
-          name: allure-report
-          path: ./unzipped-allure
-
-      - name: Unzip Allure Report
-        run: unzip ./unzipped-allure/allure-report.zip -d ./site
-
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
-        with:
-          path: ./site/build/reports/allure-report/allureReport
