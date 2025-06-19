@@ -56,11 +56,13 @@ jobs:
           name: test-results
           path: build/reports/tests/test/**
 
-      - name: Upload test results to GitHub
-        uses: actions/upload-test-report@v1
+      - name: Publish test results with GitHub Checks
+        uses: dorny/test-reporter@v1
         if: always()
         with:
-          report: build/test-results/test
+          name: JUnit Test Report
+          path: build/test-results/test/*.xml
+          reporter: java-junit
 
       - name: Upload Allure Report for GitHub Pages
         uses: actions/upload-pages-artifact@v3
