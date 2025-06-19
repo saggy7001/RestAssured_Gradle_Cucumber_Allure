@@ -1,4 +1,4 @@
-@math
+@math @login
 Feature: Add Numbers
 
   Scenario Outline: Add numbers
