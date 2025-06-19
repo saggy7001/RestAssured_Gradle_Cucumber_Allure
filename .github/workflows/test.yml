@@ -5,13 +5,13 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-  workflow_dispatch:   # manual trigger
+  workflow_dispatch:
 
 permissions:
   checks: write
   contents: read
   pages: write
-  id-token: write   # required for GitHub Pages deployment
+  id-token: write  # required for GitHub Pages deployment
 
 jobs:
   test:
@@ -34,23 +34,37 @@ jobs:
         uses: gradle/gradle-build-action@v3
 
       - name: Execute tests (even if failed)
-        run: ./gradlew clean test || echo "Tests failed, but continuing to generate report..."
+        run: |
+          ./gradlew clean test || echo "Tests failed, but continuing to generate report..."
 
       - name: Generate Allure Report
-        run: ./gradlew allureReport
+        run: |
+          ./gradlew allureReport
 
-      - name: Upload GitHub Pages Artifact
+      - name: Zip Allure Report
+        run: |
+          zip -r allure-report.zip build/reports/allure-report/allureReport
+
+      - name: Upload Allure Report ZIP
         uses: actions/upload-artifact@v4
         with:
-          name: github-pages
-          path: build/reports/allure-report/allureReport
+          name: allure-report
+          path: allure-report.zip
 
       - name: Upload test results artifact
         uses: actions/upload-artifact@v4
-        if: always() # upload even on failure
+        if: always()
         with:
           name: test-results
           path: build/reports/tests/test/**
+
+      - name: Publish test results with GitHub Checks
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: JUnit Test Report
+          path: build/test-results/test/*.xml
+          reporter: java-junit
 
   deploy:
     needs: test
@@ -60,5 +74,16 @@ jobs:
       name: github-pages
 
     steps:
+      - name: Download Allure Report ZIP
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-report
+          path: ./unzipped-allure
+
+      - name: Unzip Allure Report
+        run: unzip ./unzipped-allure/allure-report.zip -d ./site
+
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
+        with:
+          path: ./site/build/reports/allure-report/allureReport
