@@ -41,7 +41,7 @@ jobs:
         run: ./gradlew allureReport
 
       - name: Zip Allure Report
-        run: zip -r allure-report.zip build/reports/allure-report
+        run: zip -r allure-report.zip build/reports/allure-report/allureReport
 
       - name: Upload Allure Report ZIP
         uses: actions/upload-artifact@v4
@@ -55,14 +55,6 @@ jobs:
         with:
           name: test-results
           path: build/reports/tests/test/**
-
-      - name: Publish test results with GitHub Checks
-        uses: dorny/test-reporter@v1
-        if: always()
-        with:
-          name: JUnit Test Report
-          path: build/test-results/test/*.xml
-          reporter: java-junit
 
       - name: Upload Allure Report for GitHub Pages
         uses: actions/upload-pages-artifact@v3
