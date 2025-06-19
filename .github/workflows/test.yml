@@ -5,11 +5,13 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-  workflow_dispatch:   # <-- Add this line for manual trigger
+  workflow_dispatch:   # manual trigger
 
 permissions:
   checks: write
   contents: read
+  pages: write
+  id-token: write   # required for GitHub Pages deployment
 
 jobs:
   test:
@@ -36,12 +38,10 @@ jobs:
           ./gradlew clean test || echo "Tests failed, but continuing to generate report..."
 
       - name: Generate Allure Report
-        run: |
-          ./gradlew allureReport
+        run: ./gradlew allureReport
 
       - name: Zip Allure Report
-        run: |
-          zip -r allure-report.zip build/reports/allure-report
+        run: zip -r allure-report.zip build/reports/allure-report
 
       - name: Upload Allure Report ZIP
         uses: actions/upload-artifact@v4
@@ -56,10 +56,22 @@ jobs:
           name: test-results
           path: build/reports/tests/test/**
 
-      - name: Publish test results with GitHub Checks
-        uses: dorny/test-reporter@v1
-        if: always() # publish even on failure
+      - name: Upload test results to GitHub
+        uses: actions/upload-test-report@v1
+        if: always()
         with:
-          name: JUnit Test Report
-          path: build/test-results/test/*.xml
-          reporter: java-junit
+          report: build/test-results/test
+
+      - name: Upload Allure Report for GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/reports/allure-report
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+
+    steps:
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
