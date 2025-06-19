@@ -34,12 +34,10 @@ jobs:
         uses: gradle/gradle-build-action@v3
 
       - name: Execute tests (even if failed)
-        run: |
-          ./gradlew clean test || echo "Tests failed, but continuing to generate report..."
+        run: ./gradlew clean test || echo "Tests failed, but continuing to generate report..."
 
       - name: Generate Allure Report
-        run: |
-          ./gradlew allureReport
+        run: ./gradlew allureReport
 
       - name: Upload Allure Report for GitHub Pages
         uses: actions/upload-pages-artifact@v3
