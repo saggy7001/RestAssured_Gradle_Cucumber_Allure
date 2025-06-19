@@ -34,20 +34,16 @@ jobs:
         uses: gradle/gradle-build-action@v3
 
       - name: Execute tests (even if failed)
-        run: |
-          ./gradlew clean test || echo "Tests failed, but continuing to generate report..."
+        run: ./gradlew clean test || echo "Tests failed, but continuing to generate report..."
 
       - name: Generate Allure Report
         run: ./gradlew allureReport
 
-      - name: Zip Allure Report
-        run: zip -r allure-report.zip build/reports/allure-report/allureReport
-
-      - name: Upload Allure Report ZIP
+      - name: Upload Allure Report Artifact
         uses: actions/upload-artifact@v4
         with:
           name: allure-report
-          path: allure-report.zip
+          path: build/reports/allure-report/allureReport
 
       - name: Upload test results artifact
         uses: actions/upload-artifact@v4
@@ -55,11 +51,6 @@ jobs:
         with:
           name: test-results
           path: build/reports/tests/test/**
-
-      - name: Upload Allure Report for GitHub Pages
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: build/reports/allure-report/allureReport
 
   deploy:
     needs: test
@@ -69,5 +60,13 @@ jobs:
       name: github-pages
 
     steps:
+      - name: Download Allure Report Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: allure-report
+          path: allureReport
+
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
+        with:
+          path: allureReport
